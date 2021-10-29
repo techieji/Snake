@@ -14,6 +14,13 @@ movement_dict = {
     curses.KEY_DOWN : (1 , 0 )
 }
 
+opposite_dict = {
+    curses.KEY_RIGHT: curses.KEY_LEFT,
+    curses.KEY_UP: curses.KEY_DOWN,
+    curses.KEY_LEFT: curses.KEY_RIGHT,
+    curses.KEY_DOWN: curses.KEY_UP
+}
+
 num = 0
 
 def text_corner(win, txt):
@@ -40,7 +47,7 @@ def main(stdscr):
         c = stdscr.getch()
         if c == 113:        # 'q'
             return
-        if c != curses.ERR and c in [curses.KEY_RIGHT, curses.KEY_LEFT, curses.KEY_UP, curses.KEY_DOWN]:
+        if c != curses.ERR and c in [curses.KEY_RIGHT, curses.KEY_LEFT, curses.KEY_UP, curses.KEY_DOWN] and opposite_dict[movement] != c:
             movement = c
         delta = movement_dict[movement]
         lastelem = snake[-1]
@@ -59,5 +66,8 @@ def main(stdscr):
             snake = deque(snake, maxlen=snake.maxlen + 1)
             apple_pos = (randint(MARGIN, max_y - MARGIN), randint(MARGIN, max_x - MARGIN))
 
-curses.wrapper(main)
-input(f'You ate {num} apples')
+while True:
+    curses.wrapper(main)
+    s = input(f'You ate {num} apples. Play again? [y/N] ')
+    if (not s) or s[0].lower() != 'y':
+        break
